@@ -1,5 +1,16 @@
 // Gemini API integration for Quran verses
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY; 
+let GEMINI_API_KEY;
+
+// Try to get API key from different sources
+if (typeof process !== 'undefined' && process.env && process.env.GEMINI_API_KEY) {
+  GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+} else if (typeof window !== 'undefined' && window.ENV && window.ENV.GEMINI_API_KEY) {
+  GEMINI_API_KEY = window.ENV.GEMINI_API_KEY;
+} else {
+  // Fallback to a hardcoded key (not recommended for production)
+  GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+}
+
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 // Function to fetch a random Quran verse using Gemini API
