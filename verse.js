@@ -96,21 +96,28 @@ function fallbackToDefaultVerse() {
   const quoteTextElement = document.querySelector('.quote-text');
   const quoteAuthorElement = document.querySelector('.quote-author');
   
-  quoteTextElement.textContent = "And when My servants ask you concerning Me - indeed I am near. I respond to the invocation of the supplicant when he calls upon Me.";
-  quoteAuthorElement.textContent = "- Quran 2:186";
+  quoteTextElement.textContent = "And whoever is conscious of Allah... He will make a way for him to get out of every difficulty and will provide him from where he does not expect.";
+  quoteAuthorElement.textContent = "- Quran 65:4";
 }
 
 // Check if we should fetch a new verse or use cached one
 function getQuranVerse() {
   const cachedVerse = localStorage.getItem('quranVerse');
   
+  // If no API key is available, use fallback verse
+  if (!GEMINI_API_KEY) {
+    console.error("No Gemini API key available");
+    fallbackToDefaultVerse();
+    return;
+  }
+  
   if (cachedVerse) {
     const verseData = JSON.parse(cachedVerse);
     const currentTime = Date.now();
-    const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const oneMinute = 1 * 60 * 1000; // 1 minute in milliseconds
     
-    // If the cached verse is less than 30 minutes old, use it
-    if (currentTime - verseData.timestamp < thirtyMinutes) {
+    // If the cached verse is less than 1 minute old, use it
+    if (currentTime - verseData.timestamp < oneMinute) {
       const quoteTextElement = document.querySelector('.quote-text');
       const quoteAuthorElement = document.querySelector('.quote-author');
       
