@@ -102,14 +102,14 @@ body {
 .quote-section {
   background: var(--card-bg);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.6rem;
   backdrop-filter: var(--card-blur);
   border: var(--card-border);
   box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   z-index: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
 }
 
 .quote-section:hover {
@@ -118,15 +118,15 @@ body {
 }
 
 .quote-text {
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  line-height: 1.4;
   margin: 0;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .quote-author {
-  margin-top: 0.35rem;
+  margin-top: 0.2rem;
   color: var(--text-secondary);
   font-size: 0.7rem;
 }
@@ -615,7 +615,7 @@ dialog {
   padding: 1rem;
   border: none;
   border-radius: 999px;
-  background: rgba(0 0 0 / 0.25);
+  background: rgba(128, 128, 128, 0.25);
   text-align: center;
   aspect-ratio: 1;
   overflow: visible;
@@ -647,7 +647,7 @@ dialog .btn-dialog-close {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: black;
+  background-color: #808080;
   font-size: 1.2rem;
   color: white;
   border: none;

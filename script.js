@@ -214,20 +214,6 @@ function updateDate() {
   currentDateElement.textContent = currentDate;
 }
 
-// Fetch daily quote
-async function fetchDailyQuote() {
-  try {
-    const response = await fetch('https://api.quotable.io/random');
-    const data = await response.json();
-    quoteTextElement.textContent = data.content;
-    quoteAuthorElement.textContent = `- ${data.author}`;
-  } catch (error) {
-    console.error('Error fetching quote:', error);
-    quoteTextElement.textContent = 'The future belongs to those who believe in the beauty of their dreams.';
-    quoteAuthorElement.textContent = '- Eleanor Roosevelt';
-  }
-}
-
 // Handle balance updates
 function handleBalanceUpdate() {
   const now = new Date();
@@ -302,7 +288,6 @@ editBalanceBtn.addEventListener('click', () => {
 function initializeStartupPage() {
   updateGreeting();
   updateDate();
-  fetchDailyQuote();
   loadSavedBalance();
   
   // Update greeting and date every minute
@@ -310,9 +295,6 @@ function initializeStartupPage() {
     updateGreeting();
     updateDate();
   }, 60000);
-  
-  // Fetch new quote every day
-  setInterval(fetchDailyQuote, 24 * 60 * 60 * 1000);
 }
 
 // Show death date dialog on page load
@@ -680,7 +662,6 @@ currentLangDisplay.addEventListener('click', openDialog);
 drawClockFaces();
 rotateClockFaces();
 setCurrentLangDisplay(languageFlags.find(lang => lang.code === locale));
-
 // Auto-resize textarea function
 function autoResizeTextarea(textarea) {
   textarea.style.height = 'auto';
