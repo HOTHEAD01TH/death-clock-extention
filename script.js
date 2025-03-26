@@ -4,11 +4,11 @@ console.clear();
 const tickSound = document.getElementById('tick-sound');
 const soundToggle = document.getElementById('sound-toggle');
 
-// Initialize sound state from localStorage or default to muted
-let isMuted = localStorage.getItem('isMuted') === 'false' ? false : true;
+// Initialize sound state from localStorage or default to unmuted
+let isMuted = localStorage.getItem('isMuted') === 'true' ? true : false;
 
 // Set initial volume
-tickSound.volume = 0.2; // Set volume to 20%
+tickSound.volume = 0.3; // Set volume to 30%
 
 updateSoundState();
 
@@ -18,7 +18,7 @@ function updateSoundState() {
     tickSound.pause();
   } else {
     // Ensure volume is set and play
-    tickSound.volume = 0.2;
+    tickSound.volume = 0.3;
     tickSound.play().catch(e => console.log('Audio play failed:', e));
   }
   localStorage.setItem('isMuted', isMuted);
@@ -32,7 +32,7 @@ soundToggle.addEventListener('click', () => {
 // Ensure sound starts playing when user interacts with the page
 document.addEventListener('click', () => {
   if (!isMuted) {
-    tickSound.volume = 0.2;
+    tickSound.volume = 0.3;
     tickSound.play().catch(e => console.log('Audio play failed:', e));
   }
 }, { once: true });
