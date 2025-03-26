@@ -1,16 +1,5 @@
 // Gemini API integration for Quran verses
-let GEMINI_API_KEY;
-
-// Try to get API key from different sources
-if (typeof process !== 'undefined' && process.env && process.env.GEMINI_API_KEY) {
-  GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-} else if (typeof window !== 'undefined' && window.ENV && window.ENV.GEMINI_API_KEY) {
-  GEMINI_API_KEY = window.ENV.GEMINI_API_KEY;
-} else {
-  // Fallback to a hardcoded key (not recommended for production)
-  GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
-}
-
+const GEMINI_API_KEY = "AIzaSyC0tSCNEwU7IXqS7mOnM4QfDooft5egHCw"; // Replace with your actual Gemini API key
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 // Function to fetch a random Quran verse using Gemini API
@@ -93,51 +82,52 @@ async function fetchRandomQuranVerse() {
 
 // Fallback function if API fails
 function fallbackToDefaultVerse() {
-  const quoteTextElement = document.querySelector('.quote-text');
-  const quoteAuthorElement = document.querySelector('.quote-author');
-  
-  quoteTextElement.textContent = "And whoever is conscious of Allah... He will make a way for him to get out of every difficulty and will provide him from where he does not expect.";
-  quoteAuthorElement.textContent = "- Quran 65:4";
-}
-
-// Check if we should fetch a new verse or use cached one
-function getQuranVerse() {
-  const cachedVerse = localStorage.getItem('quranVerse');
-  
-  // If no API key is available, use fallback verse
-  if (!GEMINI_API_KEY) {
-    console.error("No Gemini API key available");
-    fallbackToDefaultVerse();
-    return;
+    const quoteTextElement = document.querySelector('.quote-text');
+    const quoteAuthorElement = document.querySelector('.quote-author');
+    
+    quoteTextElement.textContent = "And whoever is conscious of Allah... He will make a way for him to get out of every difficulty and will provide him from where he does not expect.";
+    quoteAuthorElement.textContent = "- Quran 65:4";
   }
   
-  if (cachedVerse) {
-    const verseData = JSON.parse(cachedVerse);
-    const currentTime = Date.now();
-    const oneMinute = 1 * 60 * 1000; // 1 minute in milliseconds
+  // Check if we should fetch a new verse or use cached one
+  function getQuranVerse() {
+    const cachedVerse = localStorage.getItem('quranVerse');
     
-    // If the cached verse is less than 1 minute old, use it
-    if (currentTime - verseData.timestamp < oneMinute) {
-      const quoteTextElement = document.querySelector('.quote-text');
-      const quoteAuthorElement = document.querySelector('.quote-author');
-      
-      quoteTextElement.textContent = verseData.verse;
-      quoteAuthorElement.textContent = `- ${verseData.reference}`;
+    // If no API key is available, use fallback verse
+    if (!GEMINI_API_KEY) {
+      console.error("No Gemini API key available");
+      fallbackToDefaultVerse();
       return;
     }
+    
+    if (cachedVerse) {
+      const verseData = JSON.parse(cachedVerse);
+      const currentTime = Date.now();
+      const oneMinute = 1 * 60 * 1000; // 1 minute in milliseconds
+      
+      // If the cached verse is less than 1 minute old, use it
+      if (currentTime - verseData.timestamp < oneMinute) {
+        const quoteTextElement = document.querySelector('.quote-text');
+        const quoteAuthorElement = document.querySelector('.quote-author');
+        
+        quoteTextElement.textContent = verseData.verse;
+        quoteAuthorElement.textContent = `- ${verseData.reference}`;
+        return;
+      }
+    }
+    
+    // Otherwise fetch a new verse
+    fetchRandomQuranVerse();
   }
   
-  // Otherwise fetch a new verse
-  fetchRandomQuranVerse();
-}
-
-// Initialize when the DOM is loaded
-document.addEventListener('DOMContentLoaded', getQuranVerse);
-
-// Refresh verse every half hour (default setting)
-setInterval(getQuranVerse, 30 * 60 * 1000); // Every 30 minutes
-
-// Other refresh interval options (commented out):
-// setInterval(getQuranVerse, 60 * 60 * 1000); // Every hour
-// setInterval(getQuranVerse, 60 * 1000);     // Every minute
-// setInterval(getQuranVerse, 10 * 1000);     // Every 10 seconds
+  // Initialize when the DOM is loaded
+  document.addEventListener('DOMContentLoaded', getQuranVerse);
+  
+  // Refresh verse every half hour (default setting)
+  setInterval(getQuranVerse, 30 * 60 * 1000); // Every 30 minutes
+  
+  // Other refresh interval options (commented out):
+  // setInterval(getQuranVerse, 60 * 60 * 1000); // Every hour
+  // setInterval(getQuranVerse, 60 * 1000);     // Every minute
+  // setInterval(getQuranVerse, 10 * 1000);     // Every 10 seconds
+  
