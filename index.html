@@ -77,22 +77,42 @@
           <img src="https://calendar.google.com/googlecalendar/images/favicon_v2018_256.png" alt="Calendar">
           <span class="link-tooltip">Calendar</span>
         </a>
-      </div>
-    </div>
-
-    <div class="quote-section">
-      <blockquote id="daily-quote">
-        <p class="quote-text">Loading quote...</p>
-        <footer class="quote-author">- Author</footer>
-      </blockquote>
-    </div>
-   
-    <div class="goal-section">
-      <div class="goal-header">
-          <h3>Today's Goal :</h3>
-      </div>
-      <div class="goal-content">
-          <input type="text" class="goal-input" placeholder="Write your goal here...">
+        <a href="https://twitter.com" class="quick-link" title="Go to Twitter">
+          <img src="https://abs.twimg.com/responsive-web/client-web/icon-ios.b1fc727a.png" alt="Twitter">
+          <span class="link-tooltip">Twitter</span>
+        </a>
+        <a href="https://linkedin.com" class="quick-link" title="Go to LinkedIn">
+          <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" alt="LinkedIn">
+          <span class="link-tooltip">LinkedIn</span>
+        </a>
+        <a href="https://amazon.com" class="quick-link" title="Go to Amazon">
+          <img src="https://www.amazon.com/favicon.ico" alt="Amazon">
+          <span class="link-tooltip">Amazon</span>
+        </a>
+        <a href="https://netflix.com" class="quick-link" title="Go to Netflix">
+          <img src="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico" alt="Netflix">
+          <span class="link-tooltip">Netflix</span>
+        </a>
+        <a href="https://spotify.com" class="quick-link" title="Go to Spotify">
+          <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify">
+          <span class="link-tooltip">Spotify</span>
+        </a>
+        <a href="https://drive.google.com" class="quick-link" title="Go to Google Drive">
+          <img src="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png" alt="Google Drive">
+          <span class="link-tooltip">Drive</span>
+        </a>
+        <a href="https://www.coursera.org" class="quick-link" title="Go to Coursera">
+          <img src="https://d3njjcbhbojbot.cloudfront.net/web/images/favicons/favicon-32x32.png" alt="Coursera">
+          <span class="link-tooltip">Coursera</span>
+        </a>
+        <a href="https://web.whatsapp.com" class="quick-link" title="Go to WhatsApp">
+          <img src="https://web.whatsapp.com/favicon.ico" alt="WhatsApp">
+          <span class="link-tooltip">WhatsApp</span>
+        </a>
+        <a href="https://chat.openai.com" class="quick-link" title="Go to ChatGPT">
+          <img src="https://chat.openai.com/favicon.ico" alt="ChatGPT">
+          <span class="link-tooltip">ChatGPT</span>
+        </a>
       </div>
     </div>
 
@@ -108,8 +128,7 @@
     </div>
   </div>
 
-  <div class="right-section">
-    <!-- Clock section -->
+  <div class="middle-section">
     <div class="clock-container">
       <div class="clock-title">
         <span class="title-text">Death Clock</span>
@@ -144,8 +163,23 @@
       <div id="countdown-timer" class="countdown-timer"></div>
     </div>
   </div>
-</div>
 
+  <div class="right-section">
+    <div class="quote-section">
+      <blockquote id="daily-quote">
+        <p class="quote-text">The future belongs to those who believe in the beauty of their dreams.</p>
+        <footer class="quote-author">- Eleanor Roosevelt</footer>
+      </blockquote>
+    </div>
+    
+    <div class="goal-section">
+      <div class="goal-header">
+          <h3>Today's Goal :</h3>
+      </div>
+      <div class="goal-content">
+          <textarea class="goal-input" placeholder="Write your goal here..."></textarea>
+      </div>
+    </div>
 <dialog id="language-dialog">
   <button type="button" id="btn-dialog-close" class="btn-dialog-close" autofocus>&#10005;</button>
   <div id="language-options" class="language-options"></div>
@@ -154,8 +188,34 @@
 <dialog id="death-year-dialog">
   <button type="button" id="btn-death-dialog-close" class="btn-dialog-close" autofocus>&#10005;</button>
   <div class="death-year-input-container">
-    <h2>Enter Your Expected Death Year</h2>
-    <input type="number" id="death-year" min="2024" max="2100" placeholder="Enter year (2024-2100)">
+    <h2>Enter Your Expected Death Date</h2>
+    <div class="death-date-inputs">
+      <div class="date-input-group">
+        <label for="death-day">Day</label>
+        <input type="number" id="death-day" min="1" max="31" placeholder="Day">
+      </div>
+      <div class="date-input-group">
+        <label for="death-month">Month</label>
+        <select id="death-month">
+          <option value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">October</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+        </select>
+      </div>
+      <div class="date-input-group">
+        <label for="death-year">Year</label>
+        <input type="number" id="death-year" min="2024" max="2100" placeholder="Year">
+      </div>
+    </div>
     <button type="button" id="submit-death-year">Submit</button>
   </div>
 </dialog>

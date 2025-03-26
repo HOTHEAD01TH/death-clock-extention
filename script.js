@@ -170,7 +170,7 @@ const languageDialog = document.getElementById('language-dialog');
 const languageOptionsContainer = document.getElementById('language-options');
 const closeButton = document.getElementById('btn-dialog-close');
 
-let deathYear = null;
+
 const deathYearDialog = document.getElementById('death-year-dialog');
 const deathYearInput = document.getElementById('death-year');
 const submitDeathYear = document.getElementById('submit-death-year');
@@ -185,6 +185,13 @@ const quoteAuthorElement = document.querySelector('.quote-author');
 const balanceAmount = document.getElementById('balance-amount');
 const lastUpdated = document.getElementById('last-updated');
 const editBalanceBtn = document.getElementById('edit-balance');
+
+// Get the new DOM elements
+const deathDayInput = document.getElementById('death-day');
+const deathMonthInput = document.getElementById('death-month');
+
+// Update the death date storage structure
+let deathDate = null;
 
 // Update greeting based on time of day
 function updateGreeting() {
@@ -308,14 +315,14 @@ function initializeStartupPage() {
   setInterval(fetchDailyQuote, 24 * 60 * 60 * 1000);
 }
 
-// Show death year dialog on page load
+// Show death date dialog on page load
 window.addEventListener('load', () => {
   initializeStartupPage();
   
-  // Check if death year is already stored
-  const storedDeathYear = localStorage.getItem('deathYear');
-  if (storedDeathYear) {
-    deathYear = parseInt(storedDeathYear);
+  // Check if death date is already stored
+  const storedDeathDate = localStorage.getItem('deathDate');
+  if (storedDeathDate) {
+    deathDate = new Date(JSON.parse(storedDeathDate));
     updateCountdownTimer();
     setInterval(updateCountdownTimer, 1000);
   } else {
@@ -323,18 +330,41 @@ window.addEventListener('load', () => {
   }
 });
 
-// Handle death year submission
+// Handle death date submission
 submitDeathYear.addEventListener('click', () => {
   const year = parseInt(deathYearInput.value);
-  if (year >= 2024 && year <= 2100) {
-    deathYear = year;
-    localStorage.setItem('deathYear', year.toString());
-    deathYearDialog.close();
-    updateCountdownTimer();
-    setInterval(updateCountdownTimer, 1000);
-  } else {
-    alert('Please enter a year between 2024 and 2100');
+  const month = parseInt(deathMonthInput.value);
+  const day = parseInt(deathDayInput.value);
+  
+  // Validate inputs
+  if (!year || year < 2024 || year > 2100) {
+    alert('Please enter a valid year between 2024 and 2100');
+    return;
   }
+  
+  if (!month && month !== 0) {
+    alert('Please select a month');
+    return;
+  }
+  
+  if (!day || day < 1 || day > 31) {
+    alert('Please enter a valid day between 1 and 31');
+    return;
+  }
+  
+  // Create date object and validate it's a real date
+  const tempDate = new Date(year, month, day);
+  if (tempDate.getMonth() !== month) {
+    alert('Invalid date. Please check the day is valid for the selected month.');
+    return;
+  }
+  
+  // Store the death date
+  deathDate = tempDate;
+  localStorage.setItem('deathDate', JSON.stringify(deathDate));
+  deathYearDialog.close();
+  updateCountdownTimer();
+  setInterval(updateCountdownTimer, 1000);
 });
 
 // Handle death year dialog close
@@ -342,25 +372,24 @@ btnDeathDialogClose.addEventListener('click', () => {
   deathYearDialog.close();
 });
 
-// Update countdown timer
+// Update countdown timer to use full date
 function updateCountdownTimer() {
-  if (!deathYear) return;
+  if (!deathDate) return;
   
   const now = new Date();
-  const deathDate = new Date(deathYear, 0, 1); // January 1st of death year
   const timeLeft = deathDate - now;
-
+  
   if (timeLeft <= 0) {
     countdownTimer.textContent = 'Time\'s up!';
     return;
   }
-
-  const years = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365));
-  const days = Math.floor((timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24));
+  
+  const years = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365.25));
+  const days = Math.floor((timeLeft % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
+  
   countdownTimer.textContent = `Time left: ${years}y ${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
@@ -438,8 +467,14 @@ function drawClockFaces() {
             element.classList.add('number');
             
             // Add 'dead' class to years that are past the death year
-            if (clockType === 'years' && deathYear && parseInt(value) >= deathYear) {
-                element.classList.add('dead');
+            if (clockType === 'years' && deathDate) {
+                const yearValue = parseInt(value);
+                if (yearValue > deathDate.getFullYear() || 
+                    (yearValue === deathDate.getFullYear() && 
+                     ((clockType === 'months' && currentValue > deathDate.getMonth()) ||
+                      (clockType === 'days' && currentValue > deathDate.getDate())))) {
+                    element.classList.add('dead');
+                }
             }
             
             element.textContent = value;
@@ -646,51 +681,64 @@ drawClockFaces();
 rotateClockFaces();
 setCurrentLangDisplay(languageFlags.find(lang => lang.code === locale));
 
+// Auto-resize textarea function
+function autoResizeTextarea(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
 // Goal input auto-save functionality
-const goalInput = document.querySelector('.goal-input');
-
-// Load saved goal from localStorage
 document.addEventListener('DOMContentLoaded', () => {
-  const savedGoal = localStorage.getItem('dailyGoal');
-  if (savedGoal) {
-    goalInput.value = savedGoal;
-  }
-});
-
-// Save goal with debounce
-let saveTimeout;
-goalInput.addEventListener('input', (e) => {
-  const goal = e.target.value;
+  const goalInput = document.querySelector('.goal-input');
   
-  // Add saving indicator
-  goalInput.classList.add('saving');
-  goalInput.classList.remove('saved');
-  
-  // Clear previous timeout
-  clearTimeout(saveTimeout);
-  
-  // Set new timeout to save after 500ms of no typing
-  saveTimeout = setTimeout(() => {
-    localStorage.setItem('dailyGoal', goal);
-    goalInput.classList.remove('saving');
-    goalInput.classList.add('saved');
+  // Only proceed if goalInput exists
+  if (goalInput) {
+    // Load saved goal from localStorage
+    const savedGoal = localStorage.getItem('dailyGoal');
+    if (savedGoal) {
+      goalInput.value = savedGoal;
+      autoResizeTextarea(goalInput);
+    }
     
-    // Remove saved class after animation
-    setTimeout(() => {
+    // Save goal with debounce
+    let saveTimeout;
+    goalInput.addEventListener('input', (e) => {
+      const goal = e.target.value;
+      
+      // Auto-resize the textarea
+      autoResizeTextarea(e.target);
+      
+      // Add saving indicator
+      goalInput.classList.add('saving');
       goalInput.classList.remove('saved');
-    }, 3000);
-  }, 500);
-});
-
-// Save on blur (when user clicks away)
-goalInput.addEventListener('blur', (e) => {
-  const goal = e.target.value;
-  localStorage.setItem('dailyGoal', goal);
-  goalInput.classList.remove('saving');
-  goalInput.classList.add('saved');
-  
-  // Remove saved class after animation
-  setTimeout(() => {
-    goalInput.classList.remove('saved');
-  }, 3000);
+      
+      // Clear previous timeout
+      clearTimeout(saveTimeout);
+      
+      // Set new timeout to save after 500ms of no typing
+      saveTimeout = setTimeout(() => {
+        localStorage.setItem('dailyGoal', goal);
+        goalInput.classList.remove('saving');
+        goalInput.classList.add('saved');
+        
+        // Remove saved class after animation
+        setTimeout(() => {
+          goalInput.classList.remove('saved');
+        }, 3000);
+      }, 500);
+    });
+    
+    // Save on blur (when user clicks away)
+    goalInput.addEventListener('blur', (e) => {
+      const goal = e.target.value;
+      localStorage.setItem('dailyGoal', goal);
+      goalInput.classList.remove('saving');
+      goalInput.classList.add('saved');
+      
+      // Remove saved class after animation
+      setTimeout(() => {
+        goalInput.classList.remove('saved');
+      }, 3000);
+    });
+  }
 });
